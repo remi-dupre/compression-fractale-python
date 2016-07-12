@@ -6,10 +6,13 @@ def normaliser(bloc) :
     min = np.min(bloc)
     max = np.max(bloc)
     bloc -= min
-    if min != max : bloc *= 255 / (max-min)
+    if min != max :
+        bloc *= 255
+        bloc //= max - min
     return (min, max)
 
 def reproduire(info, bloc) :
     min, max = info
-    bloc *= (max-min) / 255
+    bloc *= max - min
+    bloc //= 255
     bloc += min

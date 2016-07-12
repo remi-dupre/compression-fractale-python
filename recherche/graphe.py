@@ -11,7 +11,7 @@ class Graphe :
     #  - sources : liste des blocs source
     # La racine de l'arbre est le bloc d'indice 0
 
-    def __init__(self, sources) :
+    def __init__(self, sources, texte='Compression') :
         # Initialise le graphe
         # Entrée (sources) : la liste des blocs à représenter
 
@@ -20,19 +20,11 @@ class Graphe :
         self.voisins = [ [] for _ in range(n) ]
 
         distances = [ (Bloc.distance(sources[i], sources[0]), i) for i in range(1, len(sources)) ]
-        distances.sort(key=itemgetter(0)) # On ajoute les blocs par ordre croissant de distance
-        for dist, i in tqdm(distances, 'Construction') :
+        # distances.sort(key=itemgetter(0)) # On ajoute les blocs par ordre croissant de distance
+        for dist, i in tqdm(distances, texte) :
             parent, dist = self.chercherd(sources[i])
             if dist > 0 :
                 self.voisins[parent].append(i)
-
-        compteur = 0
-        for i in tqdm(range(len(sources)), 'Verification') :
-            parent, dist = self.chercherd(sources[i])
-            if dist > 0 and i != parent :
-                self.voisins[parent].append(i)
-                compteur += 1
-        print(compteur, ' arretes ajoutees')
 
 
     def chercherd(self, bloc, sommet=0, dist=None) :
