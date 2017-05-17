@@ -9,13 +9,13 @@ from decoupe import *
 import couleur
 
 class Ifs :
-""" Une couche de couleurs représentée par un objet 'ifs'
+	""" Une couche de couleurs représentée par un objet 'ifs'
 	Attributs :
 	 - parametres : la configuration avec laquelle l'ifs est appliqué
 	 - blocs : pour chaque bloc destination : (couleur, source)
 	 - couleur : les infos représentant la couleur
 	 - source : l'indice du bloc source (après transformations)
-"""
+	"""
 
 	def __init__(self, param=None) :
 		self.parametres = param
@@ -96,7 +96,7 @@ class ImageFractale :
 		# Recherche des ifs
 		if retour.parametres['couleur'] :
 			for i in range(3) :
-				col = ['Rouge', 'Vert  ', 'Bleu  ']
+				col = ['Rouge', 'Vert ', 'Bleu ']
 				retour.couches.append( Ifs.chercher(param, couche[i], col[i]) )
 		else :
 			retour.couches.append( Ifs.chercher(retour.parametres, couche[0], 'NVDG ') )
