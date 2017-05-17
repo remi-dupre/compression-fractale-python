@@ -1,9 +1,9 @@
 # Effectue quelques tests sur les différentes méthodes de recherches qui ont été implémentées
 
-from bloc import Bloc
+from recherche.bloc import Bloc
 
-NB_DESTINATIONS = 500				   # Le nombre de blocs destinations
-NB_SOURCES = (NB_DESTINATIONS // 4) * 8 # 8 transformations appliquées à des blocs 8 fois plus petits
+NB_DESTINATIONS = 500					# Le nombre de blocs destinations
+NB_SOURCES = (NB_DESTINATIONS // 4) * 8	# 8 transformations appliquées à des blocs 8 fois plus petits
 
 destinations = [ Bloc() for i in range(NB_DESTINATIONS) ]
 sources = [ Bloc() for i in range(NB_SOURCES) ]
@@ -15,7 +15,7 @@ print("La distance moyenne est ", sum(distances) / len(distances))
 
 ## Algorithme trivial
 
-import trivial
+import recherche.trivial as trivial
 
 Bloc.comparaisons = 0
 match = trivial.match(destinations, sources)
@@ -30,7 +30,7 @@ print("La distance moyenne est ", sum(distances) / len(distances), " (optimal)")
 
 ## Par découpe de l'espace
 
-from decoupe import Zone
+from recherche.decoupe import Zone
 
 Bloc.comparaisons = 0
 arbre = Zone(sources)
@@ -53,12 +53,12 @@ print("La distance moyenne est ", sum(distances) / len(distances))
 
 ## Construction d'un graphe
 
-from graphe import Graphe
+from recherche.graphe import Graphe
 
+print()
 Bloc.comparaisons = 0
 G = Graphe(sources)
 
-print()
 print("Construire le graphe demande ", Bloc.comparaisons, " comparaisons")
 
 g_match = []
