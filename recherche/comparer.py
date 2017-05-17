@@ -2,7 +2,7 @@
 
 from bloc import Bloc
 
-NB_DESTINATIONS = 500                   # Le nombre de blocs destinations
+NB_DESTINATIONS = 500				   # Le nombre de blocs destinations
 NB_SOURCES = (NB_DESTINATIONS // 4) * 8 # 8 transformations appliquées à des blocs 8 fois plus petits
 
 destinations = [ Bloc() for i in range(NB_DESTINATIONS) ]
@@ -40,9 +40,9 @@ print("Construire l'arbre de répartition demande ", Bloc.comparaisons, " compar
 
 a_match = []
 for i in range(len(destinations)) :
-    s = arbre.chercher(destinations[i])
-    a_match.append((i, s))
-    
+	s = arbre.chercher(destinations[i])
+	a_match.append((i, s))
+	
 print("Cette méthode demande au total ", Bloc.comparaisons, " comparaisons")
 
 distances = [ Bloc.distance(destinations[d], sources[s]) for (d, s) in a_match ]
@@ -63,9 +63,9 @@ print("Construire le graphe demande ", Bloc.comparaisons, " comparaisons")
 
 g_match = []
 for i in range(len(destinations)) :
-    s = G.chercher(destinations[i])
-    g_match.append((i, s))
-    
+	s = G.chercher(destinations[i])
+	g_match.append((i, s))
+	
 print("Cette méthode demande au total ", Bloc.comparaisons, " comparaisons")
 distances = [ Bloc.distance(destinations[d], sources[s]) for (d, s) in g_match ]
 print("La plus grande distance est : ", max(distances))
