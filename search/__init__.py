@@ -2,8 +2,8 @@
 Different implementations of structures to find a closest block
 
  - trivial.py	: processes an exhaustive research
- - graphe.py	: builds recursively a graph, adding a vertex with a closest node
- - decoupe.py	: builds a graph, where space is divided in 3, depending on the distance with the node
+ - graph.py		: builds recursively a graph, adding a vertex with a closest node
+ - separate.py	: builds a graph, where space is divided in 3, depending on the distance with the node
 """
 
 from abc import ABCMeta, abstractmethod

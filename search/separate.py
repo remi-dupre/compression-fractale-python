@@ -1,4 +1,5 @@
 from block import Block
+from search import BlockStruct
 import search.trivial as trivial
 
 from operator import itemgetter
@@ -6,11 +7,11 @@ from operator import itemgetter
 
 TAILLE_MIN_DECOUPE = 10 # Maximum size of a straight set in the structure
 
-class Zone :
+class Zone(BlockStruct) :
 	"""
 	Represents a partionning of a set of blocks
 
-	:param sources:	list of sources blocs
+	:param sources:	list of sources blocks
 	:param members:	list of members of the zone
 	:param is_leaf:	true if the zone hasn't been cutted off
 
@@ -33,7 +34,7 @@ class Zone :
 		self.members = members
 		self.is_leaf = True
 
-		if len(members) >= TAILLE_MIN_DECOUPE :
+		if len(self.members) >= TAILLE_MIN_DECOUPE :
 			self.split(distances)
 	
 	def insert(self, block) :
@@ -48,6 +49,7 @@ class Zone :
 		"""
 		# Choose an arbitrary center
 		#  -> 0 is cool because it remains the same for the first subdivision
+		self.is_leaf = False
 		self.center = self.members[0]
 		if distances is None :
 			distances = [ (block, self.remoteness(self.sources[block])) for block in self.members[1:] ]
@@ -69,13 +71,13 @@ class Zone :
 		"""Returns the list of potentials blocks close to ``block``"""
 		if self.is_leaf :
 			return list(self.members)
-		elif self.remoteness(bloc) < self.r1 :
-			return self.b1.candidates(bloc) + self.b2.candidates(bloc)
-		elif self.remoteness(bloc) > self.r2 :
-			return self.b1.candidates(bloc) + self.b2.candidates(bloc) + self.b3.candidates(bloc)
+		elif self.remoteness(block) < self.r1 :
+			return self.b1.candidates(block) + self.b2.candidates(block)
+		elif self.remoteness(block) > self.r2 :
+			return self.b1.candidates(block) + self.b2.candidates(block) + self.b3.candidates(block)
 		else :
-			return self.b2.candidates(bloc) + self.b3.candidates(bloc)
+			return self.b2.candidates(block) + self.b3.candidates(block)
 	
-	def search(self, bloc) :
-		i = trivial.search(self.sources, bloc, self.candidates(bloc))
+	def search(self, block) :
+		i = trivial.search(self.sources, block, self.candidates(block))
 		return self.sources[i]

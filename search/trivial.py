@@ -27,9 +27,9 @@ def search_dist(sources, block, members=None) :
 			min_block = s
 	return min_block, min_dist
 
-def search(sources, bloc, members=None) :
+def search(sources, block, members=None) :
 	"""Same as search_dist but doesn't return the distance"""
-	r, _ = search_dist(sources, bloc, members)
+	r, _ = search_dist(sources, block, members)
 	return r
 
 

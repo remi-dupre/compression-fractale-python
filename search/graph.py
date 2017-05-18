@@ -1,4 +1,3 @@
-from operator import itemgetter
 from tqdm import *
 
 from search import BlockStruct
@@ -14,13 +13,20 @@ class Graph(BlockStruct) :
 	:param sources: list of the blocks
 	"""
 
-	def __init__(self, sources) :
+	def __init__(self, sources, enhance=0) :
 		n = len(sources)
 		self.sources = []
 		self.neighbours = []
 
 		for block in sources :
 			self.insert(block)
+
+		while enhance > 0 :
+			enhance -= 1
+			for block in self.sources :
+				_, dist = self.searchd(block)
+				if dist > 10**5 :
+					self.insert(block)
 
 	def insert(self, block) :
 		"""
