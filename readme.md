@@ -4,6 +4,6 @@ Logiciel de compression d'images par fractales, destiner à comparer des méthod
 
 ## Comparaison
 ```python
-# À exécuter dans un shell python, à la racine du projet
-import recherche.comparer # Compare le coût des différentes méthodes
+import search
+search.test_random # Compare le coût des différentes méthodes sur des blocs aléatoires
 ```
