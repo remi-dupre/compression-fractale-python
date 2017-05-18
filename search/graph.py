@@ -13,36 +13,16 @@ class Graph(BlockStruct) :
 	:param sources: list of the blocks
 	"""
 
-	def __init__(self, sources, enhance=0) :
+	def __init__(self, sources) :
 		n = len(sources)
-		self.sources = []
-		self.neighbours = []
 
-		for block in sources :
-			self.insert(block)
+		self.sources = sources
+		self.neighbours = [ [] for i in range(n) ] # Nodes initialy have no neighbour
 
-		while enhance > 0 :
-			enhance -= 1
-			for block in self.sources :
-				_, dist = self.searchd(block)
-				if dist > 10**5 :
-					self.insert(block)
-
-	def insert(self, block) :
-		"""
-		Inserts a block in the graph
-
-		To do so, it searches a close block in current graph, and adds a vertex between both
-		"""
-		n = len(self.sources)
-		self.sources.append( block ) # Add the block to node list
-		self.neighbours.append( [] ) # The new node has no neighbour
-
-		# If the node is not the first one, adds a new vertex
-		if n > 0 :
-			parent, _ = self.searchd(block)
-			self.neighbours[parent].append(n) # The graph isn't directed
-
+		# Connect every blocks in the tree
+		for i in range(1, n) :
+			parent, _ = self.searchd(sources[i]) # Searches a close block in current graph
+			self.neighbours[parent].append(i) # Adds a vertex between both
 
 	def searchd(self, block, node=0, dist=None) :
 		"""
@@ -68,6 +48,6 @@ class Graph(BlockStruct) :
 				return node, dist
 
 	def search(self, block, node=0, dist=None) :
-		"""Workds like ``searchd`` but only returns the block"""
+		"""Workds like ``searchd`` but only returns the block index"""
 		s, _ = self.searchd(block, node, dist)
-		return self.sources[s]
+		return s

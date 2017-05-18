@@ -36,10 +36,6 @@ class Zone(BlockStruct) :
 
 		if len(self.members) >= TAILLE_MIN_DECOUPE :
 			self.split(distances)
-	
-	def insert(self, block) :
-		"""Not implemented, shouldn't be usefull"""
-		raise ValueError("Not implemented yet")
 
 	def split(self, distances=None) :
 		"""
@@ -80,4 +76,4 @@ class Zone(BlockStruct) :
 	
 	def search(self, block) :
 		i = trivial.search(self.sources, block, self.candidates(block))
-		return self.sources[i]
+		return i

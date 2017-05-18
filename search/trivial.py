@@ -43,9 +43,6 @@ class Exaustive(BlockStruct) :
 		# block has to be an iterable of blocks
 		self.blocks = list(blocks) # Only has to store the block list
 
-	def insert(self, block) :
-		self.blocks.append(block)
-
 	def search(self, block) :
 		i = search(self.blocks, block)
-		return self.blocks[i]
+		return i

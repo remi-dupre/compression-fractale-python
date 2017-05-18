@@ -6,7 +6,7 @@ from search.graph import Graph
 from search.separate import Zone
 from search.trivial import Exaustive
 
-NB_DESTINATIONS = 1000					# Le nombre de blocks destinations
+NB_DESTINATIONS = 500					# Le nombre de blocks destinations
 NB_SOURCES = (NB_DESTINATIONS // 4) * 8	# 8 transformations appliquées à des blocks 8 fois plus petits
 
 destinations = [ Block() for i in range(NB_DESTINATIONS) ]
@@ -31,7 +31,7 @@ for Structure in methods :
 	match = []
 	for i in range(len(destinations)) :
 		s = stock.search(destinations[i])
-		match.append((destinations[i], s))
+		match.append((destinations[i], sources[s]))
 
 	print("Demande ", Block.comparaisons, " comparaisons")
 
