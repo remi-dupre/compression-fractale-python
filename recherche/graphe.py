@@ -20,12 +20,10 @@ class Graphe :
 		self.voisins = [ [] for _ in range(n) ]
 
 		distances = [ (Bloc.distance(sources[i], sources[0]), i) for i in range(1, len(sources)) ]
-		# distances.sort(key=itemgetter(0)) # On ajoute les blocs par ordre croissant de distance
 		for dist, i in tqdm(distances, texte) :
 			parent, dist = self.chercherd(sources[i])
 			if dist > 0 :
 				self.voisins[parent].append(i)
-
 
 	def chercherd(self, bloc, sommet=0, dist=None) :
 		# Retourne l'indice d'un bloc proche dans le graphe et sa distance
