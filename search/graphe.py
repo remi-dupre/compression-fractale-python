@@ -1,53 +1,67 @@
 from operator import itemgetter
 from tqdm import *
 
-from recherche.bloc import Bloc
-import recherche.trivial as trivial
+from search import BlockStruct
+from block import Block
+import search.trivial as trivial
 
-class Graphe :
-	# Représente un ensemble de Blocs par un graphe
-	# Attributs :
-	#  - voisins : liste des listes d'adjacence
-	#  - sources : liste des blocs source
-	# La racine de l'arbre est le bloc d'indice 0
 
-	def __init__(self, sources, texte='Compression') :
-		# Initialise le graphe
-		# Entrée (sources) : la liste des blocs à représenter
+class Graph(BlockStruct) :
+	"""
+	Represents a set of blocks with a graph (actualy, a tree)
 
-		n= len(sources)
-		self.sources = sources
-		self.voisins = [ [] for _ in range(n) ]
+	:param neighbours: list of adjacency
+	:param sources: list of the blocks
+	"""
 
-		distances = [ (Bloc.distance(sources[i], sources[0]), i) for i in range(1, len(sources)) ]
-		for dist, i in tqdm(distances, texte) :
-			parent, dist = self.chercherd(sources[i])
-			if dist > 0 :
-				self.voisins[parent].append(i)
+	def __init__(self, sources) :
+		n = len(sources)
+		self.sources = []
+		self.neighbours = []
 
-	def chercherd(self, bloc, sommet=0, dist=None) :
-		# Retourne l'indice d'un bloc proche dans le graphe et sa distance
-		# Entrées :
-		#  - bloc : le bloc qu'on cherche à approcher
-		#  - sommet : le sommet d'où part la recherche
-		#  - dist : la distance du bloc à ce sommet
+		for block in sources :
+			self.insert(block)
 
-		if dist is None : dist = Bloc.distance(self.sources[sommet], bloc)
+	def insert(self, block) :
+		"""
+		Inserts a block in the graph
+
+		To do so, it searches a close block in current graph, and adds a vertex between both
+		"""
+		n = len(self.sources)
+		self.sources.append( block ) # Add the block to node list
+		self.neighbours.append( [] ) # The new node has no neighbour
+
+		# If the node is not the first one, adds a new vertex
+		if n > 0 :
+			parent = self.search(block)
+			self.neighbours[parent].append(n) # The graph isn't directed
+
+
+	def searchd(self, block, node=0, dist=None) :
+		"""
+		Gives the index of a close block and its distance
+
+		:param block:	the block we try to approximate
+		:param node:	(optional) the node the search is starting from
+		:param dist:	(optional) the distance between node and block (only specified to avoid one comparison)
+		"""
+		if dist is None :
+			dist = Block.dist(self.sources[node], block)
+
 		if not self.voisins[sommet] :
-			return sommet, dist
-		else : # On cherche si un descendant du sommet est plus proche
-			fils, nv_dist = trivial.chercher_min(self.sources, bloc, self.voisins[sommet])
+			# Reached a leaf
+			return node, dist
+		else :
+			# Search for closest descendant
+			# Redirects research to it if he is closer than current node
+			son, min_dist = trivial.search_dist(self.sources, block, self.neighbours[son])
 			if nv_dist < dist :
 				return self.chercherd(bloc, fils, nv_dist)
 			else :
 				return sommet, dist
 
-	def chercher(self, bloc, sommet=0, dist=None) :
-		# Retourne l'indice d'un bloc proche dans le graphe
-		# Entrées :
-		#  - bloc : le bloc qu'on cherche à approcher
-		#  - sommet : le sommet d'où part la recherche
-		#  - dist : la distance du bloc à ce sommet
-
-		s, _ = self.chercherd(bloc, sommet, dist)
+	def search(self, block, node=0, dist=None) :
+		"""Workds like ``searchd`` but doesn't return the distance"""
+		s, _ = self.searchd(block, node, dist)
 		return s
