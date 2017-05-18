@@ -8,6 +8,7 @@ Different implementations of structures to find a closest block
 
 from abc import ABCMeta, abstractmethod
 
+
 class BlockStruct(metaclass=ABCMeta) :
 	"""
 	Structure storing a set of blocks
@@ -26,3 +27,14 @@ class BlockStruct(metaclass=ABCMeta) :
 	def search(self, block) :
 		"""Search a block in the structure, supposed to be close from ``block``"""
 		...
+
+
+# The differents classes that can store blocks
+from search.graph import Graph
+from search.separate import Zone
+from search.trivial import Exaustive
+
+methods = [Exaustive, Graph, Zone]
+
+# To make random tests
+from search.compare import test_random
