@@ -34,7 +34,7 @@ class Graph(BlockStruct) :
 
 		# If the node is not the first one, adds a new vertex
 		if n > 0 :
-			parent = self.search(block)
+			parent, _ = self.searchd(block)
 			self.neighbours[parent].append(n) # The graph isn't directed
 
 
@@ -49,19 +49,19 @@ class Graph(BlockStruct) :
 		if dist is None :
 			dist = Block.dist(self.sources[node], block)
 
-		if not self.voisins[sommet] :
+		if not self.neighbours[node] :
 			# Reached a leaf
 			return node, dist
 		else :
 			# Search for closest descendant
 			# Redirects research to it if he is closer than current node
-			son, min_dist = trivial.search_dist(self.sources, block, self.neighbours[son])
-			if nv_dist < dist :
-				return self.chercherd(bloc, fils, nv_dist)
+			son, son_dist = trivial.search_dist(self.sources, block, self.neighbours[node])
+			if son_dist < dist :
+				return self.searchd(block, son, son_dist)
 			else :
-				return sommet, dist
+				return node, dist
 
 	def search(self, block, node=0, dist=None) :
-		"""Workds like ``searchd`` but doesn't return the distance"""
+		"""Workds like ``searchd`` but only returns the block"""
 		s, _ = self.searchd(block, node, dist)
-		return s
+		return self.sources[s]

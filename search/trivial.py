@@ -4,32 +4,32 @@ from block import Block
 from search import BlockStruct
 
 
-def search_dist(sources, block, membres=None) :
+def search_dist(sources, block, members=None) :
 	"""
 	Returns closest block
 	
 	:param sources:	list of blocks that could be returned
 	:param block:	the block that must be appoximated
-	:param membres:	(optional) indices to consider in 'sources'
+	:param members:	(optional) indices to consider in 'sources'
 
 	:return: a tuple containing the index of closest block, and the distance between both
 	"""
 
-	if membres is None :
-		membres = range(len(sources))
+	if members is None :
+		members = range(len(sources))
 	
 	min_dist = float('inf')
 	min_block = None
-	for s in membres :
+	for s in members :
 		dist = Block.dist(sources[s], block)
 		if dist < min_dist :
 			min_dist = dist
 			min_block = s
 	return min_block, min_dist
 
-def search(sources, bloc, membres=None) :
+def search(sources, bloc, members=None) :
 	"""Same as search_dist but doesn't return the distance"""
-	r, _ = chercher_min(sources, bloc, membres)
+	r, _ = search_dist(sources, bloc, members)
 	return r
 
 

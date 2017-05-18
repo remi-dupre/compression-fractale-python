@@ -1,7 +1,7 @@
-from operator import itemgetter
+from block import Block
+import search.trivial as trivial
 
-from recherche.bloc import Block
-import recherche.trivial as trivial
+from operator import itemgetter
 
 
 TAILLE_MIN_DECOUPE = 10 # Maximum size of a straight set in the structure
@@ -27,13 +27,13 @@ class Zone :
 
 		:param distances: (optional) distance for every member from the zone
 		"""
-		if membres is None : membres = range( len(sources) )
+		if members is None : members = range( len(sources) )
 		
 		self.sources = sources
 		self.members = members
-		self.is_leaf = true
+		self.is_leaf = True
 
-		if len(membres) >= TAILLE_MIN_DECOUPE :
+		if len(members) >= TAILLE_MIN_DECOUPE :
 			self.split(distances)
 	
 	def insert(self, block) :
@@ -48,18 +48,18 @@ class Zone :
 		"""
 		# Choose an arbitrary center
 		#  -> 0 is cool because it remains the same for the first subdivision
-		self.center = members[0]
+		self.center = self.members[0]
 		if distances is None :
-			distances = [ (bloc, self.remoteness(sources[block])) for block in membres[1:] ]
+			distances = [ (block, self.remoteness(self.sources[block])) for block in self.members[1:] ]
 			distances.sort(key=itemgetter(1)) # Orders by increasing distance with the center
 			self.members = [ self.center ] + [ block for block, _ in distances ] # Ordered "members"
 
 		p1, p2 = len(distances)//3, 2*len(distances)//3 # Cuts at the median
 		self.r1, self.r2 = distances[p1][1], distances[p2][1]
 		
-		self.b1 = Zone(sources, self.membres[:p1], distances[:p2])
-		self.b2 = Zone(sources, self.membres[p1:p2])
-		self.b3 = Zone(sources, self.membres[p2:])
+		self.b1 = Zone(self.sources, self.members[:p1], distances[:p2])
+		self.b2 = Zone(self.sources, self.members[p1:p2])
+		self.b3 = Zone(self.sources, self.members[p2:])
 
 	def remoteness(self, block) :
 		"""Returns distance of the block from the center"""
@@ -68,7 +68,7 @@ class Zone :
 	def candidates(self, block) :
 		"""Returns the list of potentials blocks close to ``block``"""
 		if self.is_leaf :
-			return list(self.membres)
+			return list(self.members)
 		elif self.remoteness(bloc) < self.r1 :
 			return self.b1.candidates(bloc) + self.b2.candidates(bloc)
 		elif self.remoteness(bloc) > self.r2 :

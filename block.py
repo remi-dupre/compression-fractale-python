@@ -16,7 +16,7 @@ class Block :
 		else :
 			self.data = data
 
-	def distance(A, B) :
+	def dist(A, B) :
 		# Calcule la variance entre deux Blocks
 		n = len(A.data)
 		Block.comparaisons += 1
