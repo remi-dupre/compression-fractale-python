@@ -18,8 +18,8 @@ class BlockStruct(metaclass=ABCMeta) :
 	"""
 
 	@abstractmethod
-	def __init__(self, block_list) :
-		"""Creates a new structure with initial content ``block_list``"""
+	def __init__(self, blocks) :
+		"""Creates a new structure with initial content ``blocks``, a list of blocks"""
 		...
 
 	@abstractmethod

@@ -1,8 +1,32 @@
-# Ce fichier contient les fonctions de recherche exhaustive
-# Le résultat par cette méthode donne donc les meilleurs approximations possibles et une complexité maximale.
+"""Methods for exaustive research"""
 
-from recherche.bloc import Bloc
+from block import Block
+from search import BlockStruct
 
+class Exaustive(BlockStruct) :
+	"""
+	Keeps all the blocks in a list
+	Makes an exhaustive search in it to find the closest
+	"""
+
+	def __init__(self, blocks) :
+		"""blocks has to be an iterable of blocks"""
+		self.blocks = list(blocks) # Only has to store the block list
+
+	def insert(self, block) :
+		self.blocks.append(block)
+
+	def search(self, block) :
+		min_dist = float('inf')
+		min_block = None
+		for c_block in self.blocks :
+			dist = Block.distance(cur_block, block)
+			if dist < min_dist :
+				min_block = c_block
+				min_dist = dist
+		return min_block
+
+"""
 def match(destinations, sources) :
 	# Effectue la recherche des blocs proches de façon exhaustive
 	# Entrée :
@@ -42,3 +66,4 @@ def chercher(sources, bloc, membres=None) :
 	# Pareil que chercher_dist mais sans retourner la distance
 	r, _ = chercher_min(sources, bloc, membres)
 	return r
+"""
