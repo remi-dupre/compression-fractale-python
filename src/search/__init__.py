@@ -34,7 +34,7 @@ from search.graph import Graph
 from search.separate import Zone
 from search.trivial import Exaustive
 
-methods = [Exaustive, Graph, Zone]
+methods = [Graph, Zone, Exaustive]
 
 # To make random tests
 from search.compare import test_random

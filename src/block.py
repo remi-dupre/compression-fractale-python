@@ -8,7 +8,7 @@ class Block :
 	"""
 
 	SIZE = 8			# Size of a block
-	comparaisons = 0	# A counter of the comparisons between two blocks
+	comparisons = 0	# A counter of the comparisons between two blocks
 
 	def __init__(self, data=None) :
 		"""
@@ -28,7 +28,7 @@ class Block :
 		Calculates variency between two blocks
 		"""
 		n = len(A.data)
-		Block.comparaisons += 1
+		Block.comparisons += 1
 
 		D = A.data - B.data
 		return np.sum(D**2) # // n**2 - (np.sum(D)**2 // n**2) ) 

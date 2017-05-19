@@ -124,7 +124,6 @@ class FractalImage :
 		if ret.params['color'] :
 			for i in range(3) :
 				col = ['Red', 'Green', 'Blue']
-				print(col[i] + " layer")
 				ret.layers.append( Ifs.search(params, layer[i], searcher) )
 		else :
 			print("Greyscale")
