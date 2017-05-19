@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*
 
-import couleur
+import color
 import compression
 import pickle
 
-parametres = {
-	'taille_petit' : 4, # la taille des petits blocs
-	'methode_couleur' : couleur.representation.etaler,
-	'transparence' : None,
-	'couleur' : None
+params = {
+	'size_small' : 8, # la taille des petits blocks
+	'method_color' : color.representation.spread,
+	'transparency' : None,
+	'color' : None
 }
 
-img = compression.ImageFractale.importer('lenna.png', parametres)
-img.exporter('debug.png')
+img = compression.FractalImage.read('../lenna.png', params)
+img.export().save('debug.png')
 
 pickle.dump(img, open("lenna.ifs", "wb"))

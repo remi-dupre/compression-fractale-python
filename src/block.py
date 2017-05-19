@@ -1,34 +1,45 @@
 import numpy as np
 
 class Block :
-	# Classe représentant un block dans une image
-	# Attributs :
-	#  - data : les pixels du block
+	"""
+	Represents a part of an image
 
-	TAILLE = 8		 	# La taille des blocks
-	comparaisons = 0	# Nombre decomparaisons effectuées
+	:param data:	pixels of the block
+	"""
+
+	SIZE = 8			# Size of a block
+	comparaisons = 0	# A counter of the comparisons between two blocks
 
 	def __init__(self, data=None) :
+		"""
+		Creates a new block.
+
+		If data is None, the new block has a random content
+		"""
 		if data is None :
-			# Le block a un contenu aléatoire par défaut
-			valeurs = np.random.random((Block.TAILLE, Block.TAILLE)) * 256
+			# Generates a random block
+			valeurs = np.random.random((Block.SIZE, Block.SIZE)) * 256
 			self.data = np.array(valeurs, dtype=int)
 		else :
 			self.data = data
 
 	def dist(A, B) :
-		# Calcule la variance entre deux blocks
+		"""
+		Calculates variency between two blocks
+		"""
 		n = len(A.data)
 		Block.comparaisons += 1
 
 		D = A.data - B.data
-		return np.sum(D**2)# // n**2 # - (np.sum(D)**2 // n**2) ) 
+		return np.sum(D**2) # // n**2 - (np.sum(D)**2 // n**2) ) 
 
-	def transformer(self, i) :
-		# Retourne un block auquel on a appliqué la transformation d'indice i
-		retour = self.data[::2,::2].copy()
+	def transform(self, i) :
+		"""
+		Returns the block obtained by applying the tranformation of index i
+		"""
+		ret = self.data[::2,::2].copy()
 		if i > 3 :
-			retour = np.flipud(retour)
+			ret = np.flipud(ret)
 			i -= 4
-		retour = np.rot90(retour, i)
-		return block(retour)
+		ret = np.rot90(ret, i)
+		return Block(ret)

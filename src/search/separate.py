@@ -5,7 +5,7 @@ import search.trivial as trivial
 from operator import itemgetter
 
 
-TAILLE_MIN_DECOUPE = 10 # Maximum size of a straight set in the structure
+SIZE_MIN_DECOUPE = 10 # Maximum size of a straight set in the structure
 
 class Zone(BlockStruct) :
 	"""
@@ -34,7 +34,7 @@ class Zone(BlockStruct) :
 		self.members = members
 		self.is_leaf = True
 
-		if len(self.members) >= TAILLE_MIN_DECOUPE :
+		if len(self.members) >= SIZE_MIN_DECOUPE :
 			self.split(distances)
 
 	def split(self, distances=None) :

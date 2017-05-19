@@ -1,8 +1,9 @@
 import numpy as np
 
-def normaliser(bloc) :
+
+def normalize(bloc) :
     # Normalise les blocs
-    # Retourne le couple (color min, color max) permetant de reproduire le bloc d'origine
+    # Retourne le couple (color min, color max) permetant de reproduce le bloc d'origine
     min = np.min(bloc)
     max = np.max(bloc)
     bloc -= min
@@ -11,7 +12,7 @@ def normaliser(bloc) :
         bloc //= max - min
     return (min, max)
 
-def reproduire(info, bloc) :
+def reproduce(info, bloc) :
     min, max = info
     bloc *= max - min
     bloc //= 255

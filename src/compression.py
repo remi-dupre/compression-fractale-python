@@ -3,104 +3,135 @@
 from PIL import Image
 from tqdm import tqdm
 
-from recherche.bloc import Bloc
-from recherche.graphe import Graphe
-from decoupe import *
-import couleur
+
+from block import Block
+from search.graph import Graph
+from cut import *
+import color
 
 class Ifs :
-	""" Une couche de couleurs représentée par un objet 'ifs'
-	Attributs :
-	 - parametres : la configuration avec laquelle l'ifs est appliqué
-	 - blocs : pour chaque bloc destination : (couleur, source)
-	 - couleur : les infos représentant la couleur
-	 - source : l'indice du bloc source (après transformations)
+	"""
+	A color layer represented by an IFS
+
+	:params params:		the configuration the IFS is applied with
+	:params blocks:		for each destination block : (color, source)
+		:params color:	information representing the color
+		:params source:	index of the source block (after transformation)
 	"""
 
-	def __init__(self, param=None) :
-		self.parametres = param
-		self.blocs = []
+	def __init__(self, params=None) :
+		"""Creates an empty IFS"""
+		self.params = params
+		self.blocks = []
 
-	def appliquer(self, image) :
-		# Applique l'ifs à l'image (nvdg)
-		sources = decouper(self.parametres['taille_petit'] * 2, image)
-		[ couleur.normaliser(self.parametres['methode_couleur'], bloc) for bloc in sources ]
-		sources = [ Bloc(bloc) for bloc in sources ]
+	def apply(self, image) :
+		"""Applies the IFS to a greyscale image"""
+		# Builds sources
+		sources = cut(self.params['size_small'] * 2, image)
+		[ color.normalize(self.params['method_color'], block) for block in sources ]
+		sources = [ Block(block) for block in sources ]
 
+		# Apply function to sources
 		destinations = []
-		for col, s in self.blocs :
+		for col, s in self.blocks :
 			i, transfo = s // 8, s % 8
-			destinations.append(sources[i].transformer(transfo).data)
-			couleur.reproduire(self.parametres['methode_couleur'], col, destinations[-1])
+			destinations.append(sources[i].transform(transfo).data)
+			color.reproduce(self.params['method_color'], col, destinations[-1])
 
-		return recomposer(self.parametres['taille_petit'], destinations, (len(image[0]), len(image)))
+		# Recomposes the image
+		return recompose(self.params['size_small'], destinations, (len(image[0]), len(image)))
 
 
-	def chercher(param, image, text = 'Compression') :
-		# Retourne l'ifs représentant l'image (nvdg)
+	def search(params, image, Searcher=Graph) :
+		"""
+		Returns an IFS representing the image.
 
-		destinations = decouper(param['taille_petit'], image)
-		destinations = [ Bloc(bloc) for bloc in destinations ]
+		:params params:		params for the ifs 
+		:params image:		the image to compress
+		:params Searcher:	the structure used to search matchs
+		"""
+		destinations = cut(params['size_small'], image)
+		destinations = [ Block(block) for block in destinations ]
 
-		sources = decouper(param['taille_petit']*2, image)
-		[ couleur.normaliser(param['methode_couleur'], bloc) for bloc in sources ]
-		sources = [ Bloc(bloc) for bloc in sources ]
-		sources = [ bloc.transformer(transfo) for bloc in sources for transfo in range(8) ]
+		# Build blocks
+		sources = cut(params['size_small']*2, image)
+		[ color.normalize(params['method_color'], block) for block in sources ]
+		sources = [ Block(block) for block in sources ]
+		sources = [ block.transform(transfo) for block in sources for transfo in range(8) ]
 
-		G = Graphe(sources, text + ' (1/2)')
-		retour = Ifs(param)
-		for i in tqdm(range(len(destinations)), text + ' (2/2)') :
-			col = couleur.normaliser(param['methode_couleur'], destinations[i].data)
-			s = G.chercher(destinations[i])
-			correspondance = (col, s) # couleur, source
-			retour.blocs.append(correspondance)
-		return retour
+		G = Searcher(sources)
+		ret = Ifs(params)
+		for i in tqdm(range(len(destinations))) :
+			col = color.normalize(params['method_color'], destinations[i].data)
+			s = G.search(destinations[i])
+			correspondance = (col, s) # color, source
+			ret.blocks.append(correspondance)
+		return ret
 
-class ImageFractale :
-	def __init__(self, param = None, dimensions = None) :
-		self.parametres = param # Paramètres de compressions
-		self.dimensions = dimensions # Dimensions de l'image
-		self.couches = [] # Les ifs liés aux différentes couches
 
-	def exporter(self, fichier, iterations=10) :
+class FractalImage :
+	"""
+	An image where layers are defined with IFS.
+
+	:attr params:		parameters applied for the IFS
+	:attr dimensions:	dimension of the image (width, length)
+	:attr layers:		for each layer, an IFS
+	"""
+
+	def __init__(self, params = None, dimensions = None) :
+		self.params = params
+		self.dimensions = dimensions
+		self.layers = []
+
+	def export(self, iterations=10) :
+		"""
+		Convert the image to a matricial format
+
+		:param iterations:	Number of iterations of the IFS to apply
+		:return:			A PIL image
+		"""
+		# Calculates each layer
 		image = []
-		for couche in self.couches :
+		for layer in self.layers :
 			I = np.zeros(self.dimensions, dtype=int)
 			for i in tqdm(range(iterations), 'Decompression') :
-				I = couche.appliquer(I)
+				I = layer.apply(I)
 			image.append(I)
 
+		# Reorganise layers
 		if len(image) == 2 : image = [ image[0], image[0], image[0], image[1] ]
 		if len(image) > 1 :
 			image = [ [ [ image[i][x][y] for i in range(len(image)) ] for y in range(len(image[0][0])) ] for x in range(len(image[0])) ]
 		if len(image) == 1 : image = image[0]
 
-		img = Image.fromarray( np.array(image).astype(np.uint8) )
-		img.save(fichier)
+		return Image.fromarray( np.array(image).astype(np.uint8) )
 
-	def importer(fichier, param) :
-		# Ouvre une image et l'importe au format fractale
-		img = Image.open(fichier)
+	def read(file, params) :
+		"""Opens a file and returns a fractal image representing it"""
+		img = Image.open(file)
 		l, h, p = np.array(img).shape
-		retour = ImageFractale(param, (l,h))
+		ret = FractalImage(params, (l,h))
 
-		couche = [ np.array(img)[:,:,i] for i in range(3) ]
-		couche.append(np.array(img)[:,:,3] if p == 4 else np.zeros((l,h), dtype=int))
+		layer = [ np.array(img)[:,:,i] for i in range(3) ]
+		layer.append(np.array(img)[:,:,3] if p == 4 else np.zeros((l,h), dtype=int))
 
-		# Identification des couches
-		if retour.parametres['couleur'] is None :
-			retour.parametres['couleur'] = not np.all(couche[0] == couche[1])
-		if retour.parametres['transparence'] is None :
-			retour.parametres['transparence'] = not np.all(couche[3] == couche[3][0,0])
+		# Identification of layers
+		if ret.params['color'] is None :
+			ret.params['color'] = not np.all(layer[0] == layer[1])
+		if ret.params['transparency'] is None :
+			ret.params['transparency'] = not np.all(layer[3] == layer[3][0,0])
 
-		# Recherche des ifs
-		if retour.parametres['couleur'] :
+		# Research of the IFS
+		if ret.params['color'] :
 			for i in range(3) :
-				col = ['Rouge', 'Vert ', 'Bleu ']
-				retour.couches.append( Ifs.chercher(param, couche[i], col[i]) )
+				col = ['Red', 'Green', 'Blue']
+				print(col[i] + " layer")
+				ret.layers.append( Ifs.search(params, layer[i]) )
 		else :
-			retour.couches.append( Ifs.chercher(retour.parametres, couche[0], 'NVDG ') )
-		if retour.parametres['transparence'] :
-			retour.couches.append( Ifs.chercher(retour.parametres, couche[3], 'Alpha') )
+			print("Greyscale")
+			ret.layers.append( Ifs.search(ret.params, layer[0]) )
+		if ret.params['transparency'] :
+			print("Alpha layer")
+			ret.layers.append( Ifs.search(ret.params, layer[3] ) )
 
-		return retour
+		return ret
