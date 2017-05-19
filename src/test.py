@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*
 
+from threading import Thread
+from time import sleep
+
 import color
 import compression
 import pickle
 
-params = {
-	'size_small' : 8, # la taille des petits blocks
-	'method_color' : color.Save,
-	'transparency' : None,
-	'color' : None
-}
+from search import methods
 
-img = compression.FractalImage.read('../lenna.png', params)
-img.export().save('debug.png')
 
-pickle.dump(img, open("lenna.ifs", "wb"))
+def test(searcher) :
+	params = {
+		'size_small' : 4, # la taille des petits blocks
+		'method_color' : color.Spread,
+		'transparency' : None,
+		'color' : None
+	}
+
+	img = compression.FractalImage.read('../lenna.png', params, searcher)
+
+	img.export().save("../test/" + searcher.__name__ + "-lenna.png")
+	pickle.dump(img, open("../test/" + searcher.__name__ + "-lenna.ifs", "wb"))
+
+for searcher in methods :
+	test(searcher)

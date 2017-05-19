@@ -60,7 +60,7 @@ class Ifs :
 
 		G = Searcher(sources)
 		ret = Ifs(params)
-		for i in tqdm(range(len(destinations))) :
+		for i in range(len(destinations)) :
 			col = params['method_color'].normalize(destinations[i].data)
 			s = G.search(destinations[i])
 			correspondance = (col, s) # color, source
@@ -93,7 +93,7 @@ class FractalImage :
 		image = []
 		for layer in self.layers :
 			I = np.zeros(self.dimensions, dtype=int)
-			for i in tqdm(range(iterations), 'Decompression') :
+			for i in range(iterations) :
 				I = layer.apply(I)
 			image.append(I)
 
@@ -105,7 +105,7 @@ class FractalImage :
 
 		return Image.fromarray( np.array(image).astype(np.uint8) )
 
-	def read(file, params) :
+	def read(file, params, searcher=Graph) :
 		"""Opens a file and returns a fractal image representing it"""
 		img = Image.open(file)
 		l, h, p = np.array(img).shape
@@ -125,12 +125,12 @@ class FractalImage :
 			for i in range(3) :
 				col = ['Red', 'Green', 'Blue']
 				print(col[i] + " layer")
-				ret.layers.append( Ifs.search(params, layer[i]) )
+				ret.layers.append( Ifs.search(params, layer[i], searcher) )
 		else :
 			print("Greyscale")
-			ret.layers.append( Ifs.search(ret.params, layer[0]) )
+			ret.layers.append( Ifs.search(ret.params, layer[0], searcher) )
 		if ret.params['transparency'] :
 			print("Alpha layer")
-			ret.layers.append( Ifs.search(ret.params, layer[3] ) )
+			ret.layers.append( Ifs.search(ret.params, layer[3], searcher) )
 
 		return ret
