@@ -1,21 +1,25 @@
 from enum import IntEnum
 
-import color.spread as spread
-import color.save as save
 
-class representation(IntEnum) :
-    save = 0
-    spread = 1
+class Encoder :
+	"""
+	Provides an encoding of the color for a block.
 
-def normalize(repr, bloc) :
-    if repr is representation.save :
-        return save.normalize(bloc)
-    elif repr is representation.spread :
-        return spread.normalize(bloc)
+	The encoding only defines a constraint to apply to the block after each iteration.
+	"""
 
-def reproduce(repr, info, bloc) :
-    if repr is representation.save :
-        return save.reproduce(info, bloc)
-    elif repr is representation.spread :
-        return spread.reproduce(info, bloc)
-    
+	def normalize(block) :
+		"""
+		Returns information on the block's color.
+		Modifies the block on a way it can be found back.
+		"""
+		return None
+
+	def reproduce(repr, block) :
+		"""
+		Apply the modification of the color to the block.
+		"""
+		pass
+
+from color.spread import Spread
+from color.save import Save

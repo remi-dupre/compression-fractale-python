@@ -7,7 +7,6 @@ from tqdm import tqdm
 from block import Block
 from search.graph import Graph
 from cut import *
-import color
 
 class Ifs :
 	"""
@@ -28,7 +27,7 @@ class Ifs :
 		"""Applies the IFS to a greyscale image"""
 		# Builds sources
 		sources = cut(self.params['size_small'] * 2, image)
-		[ color.normalize(self.params['method_color'], block) for block in sources ]
+		[ self.params['method_color'].normalize(block) for block in sources ]
 		sources = [ Block(block) for block in sources ]
 
 		# Apply function to sources
@@ -36,7 +35,7 @@ class Ifs :
 		for col, s in self.blocks :
 			i, transfo = s // 8, s % 8
 			destinations.append(sources[i].transform(transfo).data)
-			color.reproduce(self.params['method_color'], col, destinations[-1])
+			self.params['method_color'].reproduce(col, destinations[-1])
 
 		# Recomposes the image
 		return recompose(self.params['size_small'], destinations, (len(image[0]), len(image)))
@@ -55,14 +54,14 @@ class Ifs :
 
 		# Build blocks
 		sources = cut(params['size_small']*2, image)
-		[ color.normalize(params['method_color'], block) for block in sources ]
+		[ params['method_color'].normalize(block) for block in sources ]
 		sources = [ Block(block) for block in sources ]
 		sources = [ block.transform(transfo) for block in sources for transfo in range(8) ]
 
 		G = Searcher(sources)
 		ret = Ifs(params)
 		for i in tqdm(range(len(destinations))) :
-			col = color.normalize(params['method_color'], destinations[i].data)
+			col = params['method_color'].normalize(destinations[i].data)
 			s = G.search(destinations[i])
 			correspondance = (col, s) # color, source
 			ret.blocks.append(correspondance)

@@ -6,7 +6,7 @@ import pickle
 
 params = {
 	'size_small' : 8, # la taille des petits blocks
-	'method_color' : color.representation.spread,
+	'method_color' : color.Save,
 	'transparency' : None,
 	'color' : None
 }
