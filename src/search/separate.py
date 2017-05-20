@@ -1,3 +1,5 @@
+import numpy as np
+
 from block import Block
 from search import BlockStruct
 import search.trivial as trivial
@@ -46,7 +48,17 @@ class Zone(BlockStruct) :
 		# Choose an arbitrary center
 		#  -> 0 is cool because it remains the same for the first subdivision
 		self.is_leaf = False
+
+		# Strategy selecting first element
 		self.center = self.members[0]
+
+		# Strategy selecting the block that is the closest to the mean block
+		# mean_b = Block(np.mean([ self.sources[i].data for i in self.members ]) // len(self.members))
+		# dist_to_mean = [ (i, Block.dist(self.sources[i], mean_b)) for i in self.members ]
+		# dist_to_mean.sort(key=itemgetter(1))
+		# self.center, _ = dist_to_mean[0]
+		# distances = None
+
 		if distances is None :
 			distances = [ (block, self.remoteness(self.sources[block])) for block in self.members[1:] ]
 			distances.sort(key=itemgetter(1)) # Orders by increasing distance with the center
@@ -65,6 +77,7 @@ class Zone(BlockStruct) :
 	
 	def candidates(self, block) :
 		"""Returns the list of potentials blocks close to ``block``"""
+		ret = None
 		if self.is_leaf :
 			return list(self.members)
 		elif self.remoteness(block) < self.r1 :
@@ -75,5 +88,7 @@ class Zone(BlockStruct) :
 			return self.b2.candidates(block) + self.b3.candidates(block)
 	
 	def search(self, block) :
+		if not self.candidates(block) :
+			print(len(self.candidates(block)))
 		i = trivial.search(self.sources, block, self.candidates(block))
 		return i

@@ -43,3 +43,7 @@ class Block :
 			i -= 4
 		ret = np.rot90(ret, i)
 		return Block(ret)
+
+	def __add__(self, b) :
+		"""Addition élément by élément"""
+		return Block(self.data + b.data)
