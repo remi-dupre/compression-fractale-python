@@ -88,7 +88,5 @@ class Zone(BlockStruct) :
 			return self.b2.candidates(block) + self.b3.candidates(block)
 	
 	def search(self, block) :
-		if not self.candidates(block) :
-			print(len(self.candidates(block)))
 		i = trivial.search(self.sources, block, self.candidates(block))
 		return i

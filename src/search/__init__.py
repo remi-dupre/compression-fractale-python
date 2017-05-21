@@ -30,11 +30,12 @@ class BlockStruct(metaclass=ABCMeta) :
 
 
 # The differents classes that can store blocks
+from search.hash import Hash
 from search.graph import Graph
 from search.separate import Zone
 from search.trivial import Exaustive
 
-methods = [Graph, Zone, Exaustive]
+methods = [Hash, Graph, Zone, Exaustive]
 
 # To make random tests
 from search.compare import test_random

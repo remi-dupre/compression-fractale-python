@@ -7,7 +7,7 @@ class Block :
 	:param data:	pixels of the block
 	"""
 
-	SIZE = 8			# Size of a block
+	SIZE = 8		# Size of a block
 	comparisons = 0	# A counter of the comparisons between two blocks
 
 	def __init__(self, data=None) :

@@ -13,14 +13,17 @@ class Graph(BlockStruct) :
 	:param sources: list of the blocks
 	"""
 
-	def __init__(self, sources) :
+	def __init__(self, sources, members=None) :
 		n = len(sources)
+		
+		if members is None :
+			members = range(n)
 
 		self.sources = sources
 		self.neighbours = [ [] for i in range(n) ] # Nodes initialy have no neighbour
 
 		# Connect every blocks in the tree
-		for i in range(1, n) :
+		for i in members :
 			parent, _ = self.searchd(sources[i]) # Searches a close block in current graph
 			self.neighbours[parent].append(i) # Adds a vertex between both
 
