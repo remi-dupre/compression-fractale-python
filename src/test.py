@@ -14,7 +14,7 @@ from search import methods
 
 def test(searcher) :
 	params = {
-		'size_small' : 4,
+		'size_small' : 8,
 		'method_color' : color.Spread,
 		'transparency' : None,
 		'color' : None
